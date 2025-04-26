@@ -54,7 +54,7 @@ export const HomeScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={products?.data}
+        data={products}
         renderItem={({ item }) => (
           <ProductCard product={item} onPress={handleProductPress} />
         )}

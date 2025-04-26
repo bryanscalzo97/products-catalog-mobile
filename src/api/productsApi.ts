@@ -1,10 +1,10 @@
 import { Product } from '../models/Product';
 import { useQuery } from '@tanstack/react-query';
-import { axiosInstance } from '../services/APIClient';
+import { productRepository } from '../repositories/productRepository';
 
 export const useGetProducts = () => {
   return useQuery({
     queryKey: ['products'],
-    queryFn: () => axiosInstance.get<Product[]>('/products'),
+    queryFn: () => productRepository.getProducts(),
   });
 };
