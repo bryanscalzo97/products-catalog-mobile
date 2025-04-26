@@ -43,4 +43,9 @@ export const productRepository = {
     const response = await axiosInstance.get('/products/categories');
     return response.data;
   },
+
+  getProductById: async (id: number): Promise<Product> => {
+    const response = await axiosInstance.get(`/products/${id}`);
+    return mapApiProductToDomain(response.data);
+  },
 };

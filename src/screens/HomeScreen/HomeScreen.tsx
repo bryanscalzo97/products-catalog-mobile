@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   FlatList,
@@ -14,10 +14,10 @@ import { ProductCard } from '../../components/ProductCard';
 import { Product } from '../../models/Product';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../navigation/AppNavigator';
 import { useGetProducts, useGetCategories } from '../../api/productsApi';
 import { Ionicons } from '@expo/vector-icons';
 import { useFilters } from './useFilters';
+import { RootStackParamList } from '../../navigation/types';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -46,7 +46,7 @@ export const HomeScreen: React.FC = () => {
   } = useGetProducts(filters);
 
   const handleProductPress = (product: Product) => {
-    navigation.navigate('ProductDetail', { product });
+    navigation.navigate('ProductDetail', { productId: product.id });
   };
 
   if (isLoading) {

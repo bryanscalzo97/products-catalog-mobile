@@ -19,3 +19,11 @@ export const useGetCategories = () => {
     staleTime: 30 * 60 * 1000, // 30 minutes, because categories don't change often
   });
 };
+
+export const useGetProductById = (id: number) => {
+  return useQuery({
+    queryKey: ['product', id],
+    queryFn: () => productRepository.getProductById(id),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
