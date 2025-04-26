@@ -31,10 +31,10 @@ export const mapApiProductToDomain = (apiProduct: ApiProduct): Product => {
     price: apiProduct.price,
     description: apiProduct.description,
     category: apiProduct.category,
-    image: apiProduct.thumbnail, // Usamos thumbnail como imagen principal
+    image: apiProduct.thumbnail,
     rating: {
       rate: apiProduct.rating,
-      count: apiProduct.stock, // Usamos stock como count
+      count: apiProduct.stock,
     },
   };
 };

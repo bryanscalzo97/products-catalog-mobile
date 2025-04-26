@@ -1,10 +1,21 @@
-import { Product } from '../models/Product';
 import { useQuery } from '@tanstack/react-query';
-import { productRepository } from '../repositories/productRepository';
+import {
+  productRepository,
+  GetProductsParams,
+} from '../repositories/productRepository';
 
-export const useGetProducts = () => {
+export const useGetProducts = (params?: GetProductsParams) => {
   return useQuery({
-    queryKey: ['products'],
-    queryFn: () => productRepository.getProducts(),
+    queryKey: ['products', params],
+    queryFn: () => productRepository.getProducts(params),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+export const useGetCategories = () => {
+  return useQuery({
+    queryKey: ['categories'],
+    queryFn: () => productRepository.getCategories(),
+    staleTime: 30 * 60 * 1000, // 30 minutes, because categories don't change often
   });
 };
