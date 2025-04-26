@@ -54,7 +54,9 @@ export const ProductDetailScreen: React.FC = () => {
 
       <View style={styles.contentContainer}>
         <View style={styles.header}>
-          <Text style={styles.title}>{product.title}</Text>
+          <Text style={styles.title}>
+            {product.title} {productId}
+          </Text>
           <View style={styles.priceContainer}>
             <Text style={styles.price}>${product.price}</Text>
             <View style={styles.ratingContainer}>

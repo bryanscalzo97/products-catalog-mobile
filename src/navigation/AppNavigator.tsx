@@ -7,9 +7,25 @@ import { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+const linking = {
+  prefixes: ['productscatalog://', 'exp+products-catalog://'],
+  config: {
+    screens: {
+      Home: '',
+      ProductDetail: {
+        path: 'product/:productId',
+        parse: {
+          productId: (productId: string) => parseInt(productId),
+        },
+      },
+    },
+  },
+};
+
+export default linking;
 export const AppNavigator: React.FC = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <Stack.Navigator
         initialRouteName='Home'
         screenOptions={{
