@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Product } from '../models/Product';
+import { Image } from 'expo-image';
 
 type ProductCardProps = {
   product: Product;
