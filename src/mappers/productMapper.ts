@@ -1,17 +1,26 @@
 import { Product } from '../models/Product';
 
-// API response type
+// DummyJSON API response type
 export type ApiProduct = {
   id: number;
   title: string;
   price: number;
   description: string;
   category: string;
-  image: string;
-  rating: {
-    rate: number;
-    count: number;
-  };
+  images: string[];
+  thumbnail: string;
+  brand: string;
+  rating: number;
+  stock: number;
+  discountPercentage: number;
+};
+
+// DummyJSON API response structure
+export type ApiProductsResponse = {
+  products: ApiProduct[];
+  total: number;
+  skip: number;
+  limit: number;
 };
 
 // Transform API response to domain model
@@ -22,8 +31,11 @@ export const mapApiProductToDomain = (apiProduct: ApiProduct): Product => {
     price: apiProduct.price,
     description: apiProduct.description,
     category: apiProduct.category,
-    image: apiProduct.image,
-    rating: apiProduct.rating,
+    image: apiProduct.thumbnail, // Usamos thumbnail como imagen principal
+    rating: {
+      rate: apiProduct.rating,
+      count: apiProduct.stock, // Usamos stock como count
+    },
   };
 };
 

@@ -1,4 +1,4 @@
-export const API_URL = 'https://fakestoreapi.com';
+export const API_URL = 'https://dummyjson.com';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
 const createAxiosInstance = (baseURL: string) => {
