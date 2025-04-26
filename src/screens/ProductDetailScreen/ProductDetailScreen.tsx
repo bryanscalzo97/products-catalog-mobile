@@ -2,17 +2,16 @@ import React from 'react';
 import {
   View,
   Text,
-  Image,
   ScrollView,
   StyleSheet,
   ActivityIndicator,
-  TouchableOpacity,
   RefreshControl,
 } from 'react-native';
 import { useGetProductById } from '../../api/productsApi';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation/types';
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 
 type ProductDetailRouteProp = RouteProp<RootStackParamList, 'ProductDetail'>;
 
