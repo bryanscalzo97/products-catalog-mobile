@@ -6,12 +6,16 @@ import {
   StyleSheet,
   ActivityIndicator,
   RefreshControl,
+  Button,
+  Alert,
+  Linking,
 } from 'react-native';
 import { useGetProductById } from '../../api/productsApi';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation/types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import PurchaseReminderModule from '../../../modules/purchase-reminder';
 
 type ProductDetailRouteProp = RouteProp<RootStackParamList, 'ProductDetail'>;
 
@@ -26,6 +30,37 @@ export const ProductDetailScreen: React.FC = () => {
     refetch,
     isRefetching,
   } = useGetProductById(productId);
+
+  const handleCreateReminder = async () => {
+    try {
+      const eventId = await PurchaseReminderModule.createReminder();
+      console.log('✅ Event created with ID:', eventId);
+
+      Alert.alert(
+        '✅ Recordatorio creado',
+        '¿Quieres ver el evento?',
+        [
+          {
+            text: 'Cancelar',
+            style: 'cancel',
+          },
+          {
+            text: 'Ver Evento',
+            onPress: () => openEventInCalendar(eventId),
+          },
+        ],
+        { cancelable: true }
+      );
+    } catch (error: any) {
+      Alert.alert('❌ Error', error?.message || 'Algo salió mal');
+    }
+  };
+
+  const openEventInCalendar = (eventId: string) => {
+    // 👇 Aquí hay un pequeño truco: no existe una URL pública estándar para un eventIdentifier
+    // Así que simplemente abrimos la app Calendario
+    Linking.openURL('calshow://');
+  };
 
   if (isLoading) {
     return (
@@ -89,6 +124,7 @@ export const ProductDetailScreen: React.FC = () => {
               <Text style={styles.detailText}>
                 Available: {product.rating.count} units
               </Text>
+              <Button title='Add to calendar' onPress={handleCreateReminder} />
             </View>
           </View>
         </View>

@@ -6,6 +6,8 @@
     <true/>
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
+    <key>NSCalendarsUsageDescription</key>
+    <string>We need access to your calendar to schedule purchase reminders.</string>
     <key>CFBundleDisplayName</key>
     <string>Products Catalog</string>
     <key>CFBundleExecutable</key>
