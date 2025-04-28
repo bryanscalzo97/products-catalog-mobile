@@ -11,7 +11,12 @@ const linking = {
   prefixes: ['productscatalog://', 'exp+products-catalog://'],
   config: {
     screens: {
-      Home: '',
+      Home: {
+        path: 'category/:category?',
+        parse: {
+          category: (category: string) => decodeURIComponent(category),
+        },
+      },
       ProductDetail: {
         path: 'product/:productId',
         parse: {

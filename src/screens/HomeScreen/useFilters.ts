@@ -45,6 +45,7 @@ export const useFilters = () => {
 
   return {
     filters,
+    setFilters,
     modalState,
     setModalState,
     openFilterModal,

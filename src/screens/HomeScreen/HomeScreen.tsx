@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   FlatList,
@@ -9,35 +9,51 @@ import {
 } from 'react-native';
 import { ProductCard } from '../../components/ProductCard';
 import { Product } from '../../models/Product';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import {
+  HomeScreenNavigationProp,
+  RootStackParamList,
+} from '../../navigation/types';
 import {
   useGetProductsInfinite,
   useGetCategories,
 } from '../../api/productsApi';
 import { Ionicons } from '@expo/vector-icons';
 import { useFilters } from './useFilters';
-import { RootStackParamList } from '../../navigation/types';
+import { FilterState, FilterModalState } from './types';
 import { styles } from './HomeScreenStyles';
 import { FilterModal } from './components/FilterModal';
 import { FlashList } from '@shopify/flash-list';
 
-type HomeScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'Home'
->;
+type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
 
 export const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
+  const route = useRoute<HomeScreenRouteProp>();
 
   const {
     filters,
+    setFilters,
     modalState,
     setModalState,
     openFilterModal,
     applyFilters,
     updateModalFilter,
   } = useFilters();
+
+  useEffect(() => {
+    if (route.params?.category) {
+      const category = route.params.category;
+      setModalState((prev: FilterModalState) => ({
+        ...prev,
+        category,
+      }));
+      setFilters((prev: FilterState) => ({
+        ...prev,
+        category,
+      }));
+    }
+  }, [route.params?.category]);
 
   const {
     data,
@@ -86,7 +102,7 @@ export const HomeScreen: React.FC = () => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.filterButton} onPress={openFilterModal}>
-          <Ionicons name='options-outline' size={24} color='#666' />
+          <Ionicons name='filter' size={24} color='#666' />
         </TouchableOpacity>
       </View>
 
@@ -94,7 +110,10 @@ export const HomeScreen: React.FC = () => {
       <FlashList
         data={products}
         renderItem={({ item }) => (
-          <ProductCard product={item} onPress={handleProductPress} />
+          <ProductCard
+            product={item}
+            onPress={() => handleProductPress(item)}
+          />
         )}
         keyExtractor={(item) => item.id.toString()}
         numColumns={1}
@@ -116,7 +135,7 @@ export const HomeScreen: React.FC = () => {
       {/* Filter Modal */}
       <FilterModal
         isVisible={modalState.isVisible}
-        onClose={() => setModalState((prev) => ({ ...prev, isVisible: false }))}
+        onClose={() => setModalState({ ...modalState, isVisible: false })}
         onApply={applyFilters}
         categories={categories || []}
         modalState={modalState}
