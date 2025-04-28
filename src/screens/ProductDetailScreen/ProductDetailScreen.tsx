@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,18 +6,25 @@ import {
   StyleSheet,
   ActivityIndicator,
   RefreshControl,
+  Alert,
+  Linking,
+  TouchableOpacity,
+  Platform,
 } from 'react-native';
 import { useGetProductById } from '../../api/productsApi';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation/types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import PurchaseReminderModule from '../../../modules/purchase-reminder';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 type ProductDetailRouteProp = RouteProp<RootStackParamList, 'ProductDetail'>;
 
 export const ProductDetailScreen: React.FC = () => {
   const route = useRoute<ProductDetailRouteProp>();
   const { productId } = route.params;
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
 
   const {
     data: product,
@@ -27,9 +34,42 @@ export const ProductDetailScreen: React.FC = () => {
     isRefetching,
   } = useGetProductById(productId);
 
+  const handleAddReminder = async (selectedDate: Date) => {
+    try {
+      const eventId = await PurchaseReminderModule.createReminder(
+        selectedDate.getTime()
+      );
+      Alert.alert('✅ Reminder Created', 'Would you like to view the event?', [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'View Event',
+          onPress: () => openEventInCalendar(eventId, selectedDate),
+        },
+      ]);
+    } catch (error: any) {
+      Alert.alert('❌ Error', error?.message || 'Something went wrong');
+    }
+  };
+
+  const openEventInCalendar = (eventId: string, date: Date) => {
+    const secondsSince2001 =
+      (date.getTime() - new Date('2001-01-01T00:00:00Z').getTime()) / 1000;
+    const url = `calshow:${secondsSince2001}`;
+
+    Linking.canOpenURL(url)
+      .then((supported) => {
+        if (!supported) {
+          Alert.alert('❌ Error', 'Could not open calendar');
+        } else {
+          return Linking.openURL(url);
+        }
+      })
+      .catch(() => Alert.alert('❌ Error', 'Could not open calendar'));
+  };
+
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={styles.centeredContainer}>
         <ActivityIndicator />
       </View>
     );
@@ -37,7 +77,7 @@ export const ProductDetailScreen: React.FC = () => {
 
   if (isError || !product) {
     return (
-      <View style={styles.errorContainer}>
+      <View style={styles.centeredContainer}>
         <Text style={styles.errorText}>Error loading product details</Text>
       </View>
     );
@@ -91,6 +131,33 @@ export const ProductDetailScreen: React.FC = () => {
               </Text>
             </View>
           </View>
+
+          {/* Reminder Button - just available for iOS */}
+          {Platform.OS === 'ios' && (
+            <>
+              <TouchableOpacity
+                style={styles.reminderButton}
+                onPress={() => setDatePickerOpen(true)}
+              >
+                <View style={styles.iconContainer}>
+                  <Ionicons name='calendar' size={18} color='#333' />
+                </View>
+                <Text style={styles.reminderButtonText}>
+                  Add Purchase Reminder
+                </Text>
+              </TouchableOpacity>
+
+              <DateTimePickerModal
+                isVisible={datePickerOpen}
+                mode='datetime'
+                onConfirm={(date) => {
+                  handleAddReminder(date);
+                  setDatePickerOpen(false);
+                }}
+                onCancel={() => setDatePickerOpen(false)}
+              />
+            </>
+          )}
         </View>
       </View>
     </ScrollView>
@@ -98,51 +165,23 @@ export const ProductDetailScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  loadingContainer: {
+  container: { flex: 1, backgroundColor: '#fff' },
+  centeredContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  errorText: {
-    fontSize: 16,
-  },
-  image: {
-    width: '100%',
-    height: 300,
-    resizeMode: 'cover',
-  },
-  contentContainer: {
-    padding: 20,
-  },
-  header: {
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
-  },
+  errorText: { fontSize: 16 },
+  image: { width: '100%', height: 300, resizeMode: 'cover' },
+  contentContainer: { padding: 20 },
+  header: { marginBottom: 20 },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10, color: '#333' },
   priceContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  price: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#333',
-  },
+  price: { fontSize: 22, fontWeight: 'bold', color: '#333' },
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -151,25 +190,15 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 15,
   },
-  rating: {
-    marginLeft: 5,
-    fontSize: 14,
-    color: '#666',
-  },
-  section: {
-    marginBottom: 25,
-  },
+  rating: { marginLeft: 5, fontSize: 14, color: '#666' },
+  section: { marginBottom: 25 },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 10,
     color: '#333',
   },
-  description: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: '#666',
-  },
+  description: { fontSize: 16, lineHeight: 24, color: '#666' },
   detailsContainer: {
     backgroundColor: '#f8f8f8',
     borderRadius: 10,
@@ -180,9 +209,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
-  detailText: {
-    marginLeft: 10,
-    fontSize: 16,
-    color: '#666',
+  detailText: { marginLeft: 10, fontSize: 16, color: '#666' },
+  reminderButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderRadius: 14,
+    marginTop: 12,
+    justifyContent: 'center',
   },
+  iconContainer: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  reminderButtonText: { fontSize: 16, fontWeight: '600', color: '#333' },
 });

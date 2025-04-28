@@ -1,0 +1,17 @@
+{
+  "platforms": [
+    "apple",
+    "android",
+    "web"
+  ],
+  "apple": {
+    "modules": [
+      "PurchaseReminderModule"
+    ]
+  },
+  "android": {
+    "modules": [
+      "expo.modules.purchasereminder.PurchaseReminderModule"
+    ]
+  }
+}
