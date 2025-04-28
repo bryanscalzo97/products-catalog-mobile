@@ -58,17 +58,11 @@ export const ProductDetailScreen: React.FC = () => {
     if (product) {
       scheduleSimpleNotification(product);
     }
-    const subscription = Notifications.addNotificationResponseReceivedListener(
-      (response) => {
-        const productId = response.notification.request.content.data.productId;
-        // @ts-ignore
-        navigation.navigate('ProductDetail', { productId });
-      }
-    );
-
-    return () => {
-      subscription.remove();
-    };
+    Notifications.addNotificationResponseReceivedListener((response) => {
+      const productId = response.notification.request.content.data.productId;
+      // @ts-ignore
+      navigation.navigate('ProductDetail', { productId });
+    });
   }, [product]);
 
   if (isLoading) {
