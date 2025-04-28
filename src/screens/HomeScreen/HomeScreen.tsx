@@ -35,8 +35,6 @@ export const HomeScreen: React.FC = () => {
     updateModalFilter,
   } = useFilters();
 
-  const { data: categories } = useGetCategories();
-
   const {
     data: products,
     isLoading,
@@ -45,6 +43,8 @@ export const HomeScreen: React.FC = () => {
     refetch,
     isRefetching,
   } = useGetProducts(filters);
+
+  const { data: categories } = useGetCategories();
 
   const handleProductPress = (product: Product) => {
     navigation.navigate('ProductDetail', { productId: product.id });
