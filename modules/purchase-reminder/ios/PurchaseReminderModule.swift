@@ -22,7 +22,7 @@ public class PurchaseReminderModule: Module {
     }
 
     // Create a reminder
-  AsyncFunction("createReminder") { () async throws -> String in
+  AsyncFunction("createReminder") { (timestamp: Double) async throws -> String in
   let eventStore = EKEventStore()
 
   return try await withCheckedThrowingContinuation { continuation in
@@ -35,13 +35,15 @@ public class PurchaseReminderModule: Module {
       if granted {
         let event = EKEvent(eventStore: eventStore)
         event.title = "Purchase Reminder"
-        event.startDate = Date().addingTimeInterval(60)
-        event.endDate = event.startDate.addingTimeInterval(60 * 60)
+
+        let startDate = Date(timeIntervalSince1970: timestamp / 1000) // JS timestamp in ms ➔ Swift seconds
+        event.startDate = startDate
+        event.endDate = startDate.addingTimeInterval(60 * 60)
         event.calendar = eventStore.defaultCalendarForNewEvents
 
         do {
           try eventStore.save(event, span: .thisEvent)
-          continuation.resume(returning: event.eventIdentifier) 
+          continuation.resume(returning: event.eventIdentifier)
         } catch {
           continuation.resume(throwing: error)
         }
@@ -51,6 +53,7 @@ public class PurchaseReminderModule: Module {
     }
   }
 }
+
 
 
 
