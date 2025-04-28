@@ -41,16 +41,20 @@ public class PurchaseReminderModule: Module {
         event.endDate = startDate.addingTimeInterval(60 * 60)
         event.calendar = eventStore.defaultCalendarForNewEvents
 
+        // Set the alarm to 15 minutes before the event starts
+        let alarm = EKAlarm(relativeOffset: -15 * 60) 
+        event.addAlarm(alarm)
+
         do {
           try eventStore.save(event, span: .thisEvent)
           continuation.resume(returning: event.eventIdentifier)
         } catch {
           continuation.resume(throwing: error)
+          }
+        } else {
+          continuation.resume(throwing: NSError(domain: "PurchaseReminder", code: 1, userInfo: [NSLocalizedDescriptionKey: "Access to calendar denied"]))
         }
-      } else {
-        continuation.resume(throwing: NSError(domain: "PurchaseReminder", code: 1, userInfo: [NSLocalizedDescriptionKey: "Acceso al calendario denegado"]))
       }
-    }
   }
 }
 
