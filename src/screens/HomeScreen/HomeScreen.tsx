@@ -5,7 +5,6 @@ import {
   ActivityIndicator,
   Text,
   RefreshControl,
-  StyleSheet,
   TouchableOpacity,
   Modal,
   ScrollView,
@@ -18,6 +17,7 @@ import { useGetProducts, useGetCategories } from '../../api/productsApi';
 import { Ionicons } from '@expo/vector-icons';
 import { useFilters } from './useFilters';
 import { RootStackParamList } from '../../navigation/types';
+import { styles } from './HomeScreenStyles';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -26,6 +26,7 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<
 
 export const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
+
   const {
     filters,
     modalState,
@@ -36,6 +37,7 @@ export const HomeScreen: React.FC = () => {
   } = useFilters();
 
   const { data: categories } = useGetCategories();
+
   const {
     data: products,
     isLoading,
@@ -67,12 +69,14 @@ export const HomeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.filterButton} onPress={openFilterModal}>
           <Ionicons name='options-outline' size={24} color='#666' />
         </TouchableOpacity>
       </View>
 
+      {/* Products List */}
       <FlatList
         data={products}
         renderItem={({ item }) => (
@@ -85,6 +89,7 @@ export const HomeScreen: React.FC = () => {
         }
       />
 
+      {/* Filter Modal */}
       <Modal
         visible={modalState.isVisible}
         animationType='slide'
@@ -238,132 +243,3 @@ export const HomeScreen: React.FC = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorText: {
-    color: 'red',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    padding: 15,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ebebeb',
-    alignItems: 'center',
-  },
-  filterButton: {
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: '#f7f7f7',
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ebebeb',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  closeButton: {
-    padding: 8,
-  },
-  filterSection: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ebebeb',
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 15,
-    color: '#222',
-  },
-  filterRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  filterChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#f7f7f7',
-    borderWidth: 1,
-    borderColor: '#ebebeb',
-  },
-  filterChipText: {
-    fontSize: 14,
-    color: '#222',
-  },
-  selectedFilterChip: {
-    backgroundColor: '#0060b3',
-    borderColor: '#0060b3',
-  },
-  selectedFilterChipText: {
-    color: '#fff',
-    fontWeight: '500',
-  },
-  sortContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
-  },
-  sortButton: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-    backgroundColor: '#f7f7f7',
-    marginHorizontal: 4,
-    alignItems: 'center',
-  },
-  sortButtonText: {
-    fontSize: 14,
-    color: '#222',
-  },
-  selectedSortButton: {
-    backgroundColor: '#0060b3',
-  },
-  selectedSortButtonText: {
-    color: '#fff',
-    fontWeight: '500',
-  },
-  applyButton: {
-    backgroundColor: '#0060b3',
-    padding: 20,
-    alignItems: 'center',
-    margin: 20,
-    borderRadius: 8,
-  },
-  applyButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  modalContent: {
-    flex: 1,
-  },
-});
