@@ -11,7 +11,10 @@ import { ProductCard } from '../../components/ProductCard';
 import { Product } from '../../models/Product';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useGetProducts, useGetCategories } from '../../api/productsApi';
+import {
+  useGetProductsInfinite,
+  useGetCategories,
+} from '../../api/productsApi';
 import { Ionicons } from '@expo/vector-icons';
 import { useFilters } from './useFilters';
 import { RootStackParamList } from '../../navigation/types';
@@ -36,19 +39,30 @@ export const HomeScreen: React.FC = () => {
   } = useFilters();
 
   const {
-    data: products,
+    data,
     isLoading,
     isError,
     error,
     refetch,
     isRefetching,
-  } = useGetProducts(filters);
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGetProductsInfinite(filters);
 
   const { data: categories } = useGetCategories();
 
   const handleProductPress = (product: Product) => {
     navigation.navigate('ProductDetail', { productId: product.id });
   };
+
+  const handleLoadMore = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  };
+
+  const products = data?.pages.flatMap((page) => page.products) || [];
 
   if (isLoading) {
     return (
@@ -85,6 +99,15 @@ export const HomeScreen: React.FC = () => {
         numColumns={1}
         refreshControl={
           <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
+        }
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          isFetchingNextPage ? (
+            <View style={styles.loadingMoreContainer}>
+              <ActivityIndicator />
+            </View>
+          ) : null
         }
       />
 

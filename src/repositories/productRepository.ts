@@ -12,6 +12,8 @@ export type GetProductsParams = {
   category?: string;
   sortBy?: 'price' | 'rating';
   order?: 'asc' | 'desc';
+  limit?: number;
+  skip?: number;
 };
 
 export const productRepository = {
@@ -29,6 +31,14 @@ export const productRepository = {
 
     if (params?.order) {
       queryParams.append('order', params.order);
+    }
+
+    if (params?.limit) {
+      queryParams.append('limit', params.limit.toString());
+    }
+
+    if (params?.skip) {
+      queryParams.append('skip', params.skip.toString());
     }
 
     const queryString = queryParams.toString();
