@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Pressable } from 'react-native';
 import { Product } from '../models/Product';
 import { Image } from 'expo-image';
 
@@ -11,57 +11,113 @@ type ProductCardProps = {
 export const ProductCard: React.FC<ProductCardProps> = memo(
   ({ product, onPress }) => {
     return (
-      <TouchableOpacity style={styles.card} onPress={() => onPress(product)}>
-        <Image
-          source={{ uri: product.image }}
-          style={styles.image}
-          contentFit='contain'
-        />
+      <Pressable
+        style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+        onPress={() => onPress(product)}
+      >
+        <View style={styles.imageContainer}>
+          <Image
+            source={{ uri: product.image }}
+            style={styles.image}
+            contentFit='contain'
+          />
+        </View>
         <View style={styles.info}>
+          <View style={styles.priceContainer}>
+            <Text style={styles.price}>${product.price.toLocaleString()}</Text>
+          </View>
           <Text style={styles.title} numberOfLines={2}>
             {product.title}
           </Text>
-          <Text style={styles.price}>${product.price}</Text>
-          <Text style={styles.rating}>
-            ⭐ {product.rating.rate} ({product.rating.count})
-          </Text>
+          <View style={styles.ratingContainer}>
+            <Text style={styles.rating}>⭐ {product.rating.rate}</Text>
+            <Text style={styles.reviews}>({product.rating.count} reviews)</Text>
+          </View>
+          <View style={styles.categoryContainer}>
+            <Text style={styles.category}>{product.category}</Text>
+          </View>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     );
   }
 );
 
+const { width } = Dimensions.get('window');
+const cardWidth = width - 32; // 16px padding on each side
+
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: 'white',
-    borderRadius: 8,
-    margin: 8,
-    padding: 8,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    marginHorizontal: 16,
+    marginVertical: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 2,
+    overflow: 'hidden',
   },
-  image: {
+  cardPressed: {
+    backgroundColor: '#FAFAFA',
+    transform: [{ scale: 0.985 }],
+  },
+  imageContainer: {
     width: '100%',
     height: 200,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  image: {
+    width: '80%',
+    height: '80%',
   },
   info: {
-    padding: 8,
+    padding: 16,
   },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,
+  priceContainer: {
+    marginBottom: 8,
   },
   price: {
-    fontSize: 18,
-    color: '#333',
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontWeight: '600',
+    color: '#222222',
+    letterSpacing: -0.5,
+  },
+  title: {
+    fontSize: 15,
+    color: '#484848',
+    marginBottom: 8,
+    lineHeight: 20,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   rating: {
     fontSize: 14,
-    color: '#666',
+    color: '#484848',
+    marginRight: 4,
+  },
+  reviews: {
+    fontSize: 14,
+    color: '#767676',
+  },
+  categoryContainer: {
+    marginTop: 4,
+  },
+  category: {
+    fontSize: 12,
+    color: '#008489',
+    textTransform: 'capitalize',
+    backgroundColor: '#F4FAFA',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    alignSelf: 'flex-start',
   },
 });

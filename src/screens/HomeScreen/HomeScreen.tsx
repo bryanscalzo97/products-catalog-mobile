@@ -110,7 +110,7 @@ export const HomeScreen: React.FC = () => {
             </View>
           ) : null
         }
-        estimatedItemSize={294}
+        estimatedItemSize={361}
       />
 
       {/* Filter Modal */}

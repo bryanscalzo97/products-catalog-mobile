@@ -1,51 +1,27 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F7F7F7',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingMoreContainer: {
-    paddingVertical: 20,
-    alignItems: 'center',
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#FF3B30',
-    textAlign: 'center',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    padding: 10,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#EBEBEB',
-  },
-  filterButton: {
-    padding: 8,
-  },
   modalContainer: {
     flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
     backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    maxHeight: '80%',
+  },
+  modalScroll: {
+    flex: 1,
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    marginBottom: 20,
+    paddingBottom: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#EBEBEB',
   },
@@ -57,26 +33,21 @@ export const styles = StyleSheet.create({
   closeButton: {
     padding: 8,
   },
-  modalContent: {
-    flex: 1,
-    padding: 20,
-  },
   filterSection: {
     marginBottom: 24,
   },
-  sectionTitle: {
+  filterTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#484848',
     marginBottom: 16,
   },
-  filterRow: {
+  categoryList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-    marginBottom: 8,
   },
-  filterChip: {
+  categoryChip: {
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 24,
@@ -84,15 +55,15 @@ export const styles = StyleSheet.create({
     borderColor: '#DDDDDD',
     backgroundColor: '#FFFFFF',
   },
-  selectedFilterChip: {
+  categoryChipSelected: {
     backgroundColor: '#007AFF',
     borderColor: '#007AFF',
   },
-  filterChipText: {
+  categoryText: {
     fontSize: 14,
     color: '#484848',
   },
-  selectedFilterChipText: {
+  categoryTextSelected: {
     color: '#FFFFFF',
   },
   sortContainer: {
@@ -102,7 +73,7 @@ export const styles = StyleSheet.create({
   sortButton: {
     flex: 1,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 8,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#DDDDDD',
@@ -122,36 +93,37 @@ export const styles = StyleSheet.create({
   },
   modalFooter: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     gap: 12,
     marginTop: 24,
-    marginHorizontal: 20,
-    marginBottom: 20,
+    paddingTop: 16,
     borderTopWidth: 1,
     borderTopColor: '#EBEBEB',
-    paddingTop: 20,
   },
   resetButton: {
     flex: 1,
-    padding: 16,
+    padding: 15,
     borderRadius: 8,
     backgroundColor: '#F5F5F5',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   resetButtonText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
     color: '#484848',
   },
   applyButton: {
     flex: 1,
-    padding: 16,
+    padding: 15,
     borderRadius: 8,
     backgroundColor: '#007AFF',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   applyButtonText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
     color: '#FFFFFF',
   },
 });

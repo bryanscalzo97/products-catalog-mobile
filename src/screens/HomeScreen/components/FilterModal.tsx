@@ -28,6 +28,12 @@ export const FilterModal: React.FC<FilterModalProps> = ({
   modalState,
   onUpdateFilter,
 }) => {
+  const handleReset = () => {
+    onUpdateFilter('category', '');
+    onUpdateFilter('sortBy', 'price');
+    onUpdateFilter('sortOrder', 'asc');
+  };
+
   return (
     <Modal
       visible={isVisible}
@@ -170,12 +176,17 @@ export const FilterModal: React.FC<FilterModalProps> = ({
               </TouchableOpacity>
             </View>
           </View>
-
-          {/* Apply Button */}
-          <TouchableOpacity style={styles.applyButton} onPress={onApply}>
-            <Text style={styles.applyButtonText}>Apply Filters</Text>
-          </TouchableOpacity>
         </ScrollView>
+
+        {/* Footer with Reset and Apply buttons */}
+        <View style={styles.modalFooter}>
+          <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
+            <Text style={styles.resetButtonText}>Reset</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.applyButton} onPress={onApply}>
+            <Text style={styles.applyButtonText}>Apply</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Modal>
   );
