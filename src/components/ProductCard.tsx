@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   },
   category: {
     fontSize: 12,
-    color: '#008489',
+    color: '#179185',
     textTransform: 'capitalize',
     backgroundColor: '#F4FAFA',
     paddingHorizontal: 8,

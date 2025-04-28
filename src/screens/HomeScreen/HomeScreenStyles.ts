@@ -85,8 +85,8 @@ export const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   selectedFilterChip: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
+    backgroundColor: '#179185',
+    borderColor: '#179185',
   },
   filterChipText: {
     fontSize: 14,
@@ -110,8 +110,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectedSortButton: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
+    backgroundColor: '#179185',
+    borderColor: '#179185',
   },
   sortButtonText: {
     fontSize: 14,
@@ -146,7 +146,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     borderRadius: 8,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#179185',
     alignItems: 'center',
   },
   applyButtonText: {
