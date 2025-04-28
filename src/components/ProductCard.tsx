@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Product } from '../models/Product';
 import { Image } from 'expo-image';
@@ -8,25 +8,28 @@ type ProductCardProps = {
   onPress: (product: Product) => void;
 };
 
-export const ProductCard: React.FC<ProductCardProps> = ({
-  product,
-  onPress,
-}) => {
-  return (
-    <TouchableOpacity style={styles.card} onPress={() => onPress(product)}>
-      <Image source={{ uri: product.image }} style={styles.image} />
-      <View style={styles.info}>
-        <Text style={styles.title} numberOfLines={2}>
-          {product.title}
-        </Text>
-        <Text style={styles.price}>${product.price}</Text>
-        <Text style={styles.rating}>
-          ⭐ {product.rating.rate} ({product.rating.count})
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
-};
+export const ProductCard: React.FC<ProductCardProps> = memo(
+  ({ product, onPress }) => {
+    return (
+      <TouchableOpacity style={styles.card} onPress={() => onPress(product)}>
+        <Image
+          source={{ uri: product.image }}
+          style={styles.image}
+          contentFit='contain'
+        />
+        <View style={styles.info}>
+          <Text style={styles.title} numberOfLines={2}>
+            {product.title}
+          </Text>
+          <Text style={styles.price}>${product.price}</Text>
+          <Text style={styles.rating}>
+            ⭐ {product.rating.rate} ({product.rating.count})
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   card: {
@@ -43,7 +46,6 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 200,
-    resizeMode: 'contain',
   },
   info: {
     padding: 8,

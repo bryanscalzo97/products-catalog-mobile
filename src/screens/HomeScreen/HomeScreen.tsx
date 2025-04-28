@@ -20,6 +20,7 @@ import { useFilters } from './useFilters';
 import { RootStackParamList } from '../../navigation/types';
 import { styles } from './HomeScreenStyles';
 import { FilterModal } from './components/FilterModal';
+import { FlashList } from '@shopify/flash-list';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -90,7 +91,7 @@ export const HomeScreen: React.FC = () => {
       </View>
 
       {/* Products List */}
-      <FlatList
+      <FlashList
         data={products}
         renderItem={({ item }) => (
           <ProductCard product={item} onPress={handleProductPress} />
@@ -109,6 +110,7 @@ export const HomeScreen: React.FC = () => {
             </View>
           ) : null
         }
+        estimatedItemSize={294}
       />
 
       {/* Filter Modal */}

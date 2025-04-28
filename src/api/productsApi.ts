@@ -20,13 +20,18 @@ export const useGetProductsInfinite = (
     queryFn: async ({ pageParam = 0 }) => {
       const response = await productRepository.getProducts({
         ...params,
-        skip: pageParam,
+        skip: pageParam * 10,
         limit: 10,
       });
-      return { products: response, nextPage: pageParam + 10 };
+      return {
+        products: response,
+        nextPage: response.length === 10 ? pageParam + 1 : undefined,
+        currentPage: pageParam,
+      };
     },
     getNextPageParam: (lastPage) => lastPage.nextPage,
     initialPageParam: 0,
+    getPreviousPageParam: (firstPage) => firstPage.currentPage - 1,
   });
 };
 
