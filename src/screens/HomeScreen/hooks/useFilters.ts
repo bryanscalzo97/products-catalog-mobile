@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FilterState, FilterModalState } from './types';
+import { FilterModalState, FilterState } from '../../../models';
 
 const INITIAL_FILTERS: FilterState = {
   category: '',

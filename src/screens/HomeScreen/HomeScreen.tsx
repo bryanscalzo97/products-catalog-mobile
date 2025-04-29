@@ -14,7 +14,7 @@ import {
   useGetCategories,
 } from '../../api/productsApi';
 import { Ionicons } from '@expo/vector-icons';
-import { FilterState, FilterModalState } from './types';
+import { FilterState, FilterModalState } from '../../models';
 import { styles } from './HomeScreenStyles';
 import { FilterModal } from './components/FilterModals/FilterModal';
 import { FlashList } from '@shopify/flash-list';

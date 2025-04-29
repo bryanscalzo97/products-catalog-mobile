@@ -1,12 +1,12 @@
+export type SortBy = 'price' | 'rating';
+export type SortOrder = 'asc' | 'desc';
+
 export type FilterState = {
-  category?: string;
-  sortBy?: 'price' | 'rating';
-  sortOrder?: 'asc' | 'desc';
+  category: string;
+  sortBy: SortBy;
+  sortOrder: SortOrder;
 };
 
-export type FilterModalState = {
+export type FilterModalState = FilterState & {
   isVisible: boolean;
-  category?: string;
-  sortBy?: 'price' | 'rating';
-  sortOrder?: 'asc' | 'desc';
 };
