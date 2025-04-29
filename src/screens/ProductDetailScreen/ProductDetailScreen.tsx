@@ -7,6 +7,8 @@ import {
   RefreshControl,
   SafeAreaView,
   Pressable,
+  Platform,
+  Alert,
 } from 'react-native';
 import { useGetProductById } from '../../api/productsApi';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
@@ -38,6 +40,7 @@ export const ProductDetailScreen: React.FC = () => {
   const navigation = useNavigation<ProductDetailScreenNavigationProp>();
   const { productId } = route.params;
 
+  // Product detail data
   const {
     data: product,
     isLoading,
@@ -46,6 +49,7 @@ export const ProductDetailScreen: React.FC = () => {
     isRefetching,
   } = useGetProductById(productId);
 
+  // Purchase reminder state and functions
   const {
     datePickerOpen,
     setDatePickerOpen,
@@ -53,17 +57,28 @@ export const ProductDetailScreen: React.FC = () => {
     scheduleSimpleNotification,
   } = useReminder();
 
-  // Effect to schedule notification a minutes after the user opens the product detail screen for engagement purposes
+  // Effect to schedule notification a minutes after the user opens the product detail screen for engagement purposes.
   useEffect(() => {
     if (product) {
       scheduleSimpleNotification(product);
     }
     Notifications.addNotificationResponseReceivedListener((response) => {
       const productId = response.notification.request.content.data.productId;
-      // @ts-ignore
       navigation.navigate('ProductDetail', { productId });
     });
   }, [product]);
+
+  const handleReminderPress = () => {
+    if (Platform.OS === 'ios') {
+      setDatePickerOpen(true);
+    } else {
+      Alert.alert(
+        'iOS Only Feature',
+        'The purchase reminder feature is currently only available on iOS. We are working on bringing this feature to Android soon!',
+        [{ text: 'OK' }]
+      );
+    }
+  };
 
   if (isLoading) {
     return (
@@ -78,7 +93,7 @@ export const ProductDetailScreen: React.FC = () => {
       <View style={styles.centeredContainer}>
         <Ionicons name='alert-circle-outline' size={48} color='#FF3B30' />
         <Text style={styles.errorText}>
-          Unable to load product details.{'\n'}Please try again later.
+          Unable to load product details. Please try again later.
         </Text>
       </View>
     );
@@ -154,7 +169,7 @@ export const ProductDetailScreen: React.FC = () => {
             styles.reminderButton,
             pressed && { opacity: 0.8 },
           ]}
-          onPress={() => setDatePickerOpen(true)}
+          onPress={handleReminderPress}
         >
           <Ionicons name='notifications-outline' size={22} color='#fff' />
           <Text style={styles.reminderButtonText}>Set Purchase Reminder</Text>

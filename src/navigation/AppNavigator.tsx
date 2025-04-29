@@ -27,8 +27,6 @@ const linking = {
   },
 };
 
-export default linking;
-
 export const AppNavigator: React.FC = () => {
   return (
     <NavigationContainer linking={linking}>

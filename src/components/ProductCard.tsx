@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { View, Text, StyleSheet, Dimensions, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Product } from '../models/Product';
 import { Image } from 'expo-image';
 
@@ -41,9 +41,6 @@ export const ProductCard: React.FC<ProductCardProps> = memo(
     );
   }
 );
-
-const { width } = Dimensions.get('window');
-const cardWidth = width - 32; // 16px padding on each side
 
 const styles = StyleSheet.create({
   card: {

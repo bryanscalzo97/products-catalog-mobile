@@ -41,6 +41,7 @@ export const HomeScreen: React.FC = () => {
     updateModalFilter,
   } = useFilters();
 
+  // If a category is provided in the route params (deep link), update the modal state and filters.
   useEffect(() => {
     if (route.params?.category) {
       const category = route.params.category;

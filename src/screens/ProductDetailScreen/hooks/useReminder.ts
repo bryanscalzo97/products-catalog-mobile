@@ -44,7 +44,7 @@ export const useReminder = () => {
   const scheduleSimpleNotification = async (product: Product) => {
     const { status } = await Notifications.requestPermissionsAsync();
     if (status !== 'granted') {
-      console.log('Notification permission not granted');
+      Alert.alert('❌ Error', 'Notification permission not granted');
       return;
     }
     await Notifications.scheduleNotificationAsync({
@@ -52,13 +52,13 @@ export const useReminder = () => {
         title: `Still thinking about ${product.title}?`,
         body: `Don't wait too long. ${product.title} could be yours!`,
         data: {
-          productId: product.id ?? 26,
-          title: product.title ?? 'test',
+          productId: product.id,
+          title: product.title,
         },
       },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-        seconds: 5,
+        seconds: 5, // 5 seconds after the user opens the product detail screen, for testing purposes.
       },
     });
   };
