@@ -58,7 +58,7 @@ A React Native mobile application that allows users to browse and filter product
 1. Clone the repository
 
 ```bash
-git clone [https://github.com/bryanscalzo97/products-catalog-mobile.git]
+git clone https://github.com/bryanscalzo97/products-catalog-mobile.git
 ```
 
 2. Install dependencies
