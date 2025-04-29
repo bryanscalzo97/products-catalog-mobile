@@ -6,7 +6,6 @@ import {
   ActivityIndicator,
   RefreshControl,
   SafeAreaView,
-  Pressable,
   Platform,
   Alert,
 } from 'react-native';
@@ -17,11 +16,14 @@ import {
   RootStackParamList,
 } from '../../navigation/types';
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { styles } from './ProductDetailScreenStyles';
 import { useReminder } from './hooks/useReminder';
 import * as Notifications from 'expo-notifications';
+import { ProductHeader } from './components/ProductHeader';
+import { ProductPrice } from './components/ProductPrice';
+import { ProductDescription } from './components/ProductDescription';
+import { ReminderButton } from './components/ReminderButton';
 
 // Define the type for route parameters specific to this screen
 type ProductDetailRouteProp = RouteProp<RootStackParamList, 'ProductDetail'>;
@@ -99,15 +101,9 @@ export const ProductDetailScreen: React.FC = () => {
     );
   }
 
-  const formatPrice = (price: number) => {
-    const [dollars, cents] = price.toFixed(2).split('.');
-    return { dollars, cents };
-  };
-
-  const { dollars, cents } = formatPrice(product.price);
-
   return (
     <SafeAreaView style={styles.container}>
+      {/* Product Details ScrollView */}
       <ScrollView
         style={styles.container}
         refreshControl={
@@ -115,66 +111,25 @@ export const ProductDetailScreen: React.FC = () => {
         }
         contentContainerStyle={{ paddingBottom: 100 }}
       >
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: product.image }} style={styles.image} />
-        </View>
+        <ProductHeader product={product} />
 
         <View style={styles.contentContainer}>
-          <View style={styles.header}>
-            <Text style={styles.categoryLabel}>{product.category}</Text>
-            <Text style={styles.title}>{product.title}</Text>
-
-            <View style={styles.ratingContainer}>
-              <Ionicons name='star' size={18} color='#FFD700' />
-              <Text style={styles.rating}>{product.rating.rate}</Text>
-              <Text style={styles.ratingCount}>
-                ({product.rating.count} reviews)
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.priceSection}>
-            <Text style={styles.priceLabel}>Price</Text>
-            <View style={styles.priceContainer}>
-              <Text style={styles.price}>${dollars}</Text>
-              <Text style={styles.priceDecimals}>{cents}</Text>
-            </View>
-            <Text style={styles.stockLabel}>
-              {product.rating.count > 0
-                ? `Stock available (${product.rating.count} units)`
-                : 'Out of stock'}
-            </Text>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>About this product</Text>
-            <Text style={styles.description}>{product.description}</Text>
-          </View>
+          <ProductPrice product={product} />
+          <ProductDescription product={product} />
         </View>
       </ScrollView>
 
-      {/* Reminder Button */}
-      <View style={styles.reminderContainer}>
-        <DateTimePickerModal
-          isVisible={datePickerOpen}
-          mode='datetime'
-          onConfirm={(date) => {
-            handleAddReminder(date);
-            setDatePickerOpen(false);
-          }}
-          onCancel={() => setDatePickerOpen(false)}
-        />
-        <Pressable
-          style={({ pressed }) => [
-            styles.reminderButton,
-            pressed && { opacity: 0.8 },
-          ]}
-          onPress={handleReminderPress}
-        >
-          <Ionicons name='notifications-outline' size={22} color='#fff' />
-          <Text style={styles.reminderButtonText}>Set Purchase Reminder</Text>
-        </Pressable>
-      </View>
+      {/* Purchase Reminder Button */}
+      <ReminderButton onPress={handleReminderPress} />
+      <DateTimePickerModal
+        isVisible={datePickerOpen}
+        mode='datetime'
+        onConfirm={(date) => {
+          handleAddReminder(date);
+          setDatePickerOpen(false);
+        }}
+        onCancel={() => setDatePickerOpen(false)}
+      />
     </SafeAreaView>
   );
 };
