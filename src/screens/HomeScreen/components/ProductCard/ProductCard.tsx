@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { View, Text, Pressable } from 'react-native';
-import { Product } from '../../../../models/Product';
+import { Product } from '../../../../models';
 import { Image } from 'expo-image';
 import { styles } from './ProductCardStyles';
 

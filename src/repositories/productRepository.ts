@@ -1,6 +1,6 @@
 import { axiosInstance } from '../services/APIClient';
 import { mapApiProductToDomain } from '../mappers/productMapper';
-import { Product } from '../models/Product';
+import { Product } from '../models';
 
 export type Category = {
   slug: string;

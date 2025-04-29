@@ -6,13 +6,9 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
-import { ProductCard } from './components/ProductCard/ProductCard';
-import { Product } from '../../models/Product';
+import { Product } from '../../models';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import {
-  HomeScreenNavigationProp,
-  RootStackParamList,
-} from '../../navigation/types';
+import { HomeScreenNavigationProp, RootStackParamList } from '../../models';
 import {
   useGetProductsInfinite,
   useGetCategories,
@@ -23,6 +19,7 @@ import { styles } from './HomeScreenStyles';
 import { FilterModal } from './components/FilterModals/FilterModal';
 import { FlashList } from '@shopify/flash-list';
 import { useFilters } from './hooks/useFilters';
+import { ProductCard } from './components/ProductCard/ProductCard';
 
 type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
 

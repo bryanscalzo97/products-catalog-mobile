@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Alert, Linking } from 'react-native';
 import PurchaseReminderModule from '../../../../modules/purchase-reminder';
 import * as Notifications from 'expo-notifications';
-import { Product } from '../../../models/Product';
+import { Product } from '../../../models';
 
 export const useReminder = () => {
   const [datePickerOpen, setDatePickerOpen] = useState(false);
