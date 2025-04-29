@@ -4,7 +4,7 @@ A React Native mobile application that allows users to browse and filter product
 
 ## Features
 
-- 📱 Product catalog with infinite scroll
+- 📱 Product catalog with infinite scroll using FlashList for optimal performance
 - 🔍 Filter products by category
 - 📊 Sort products by price or rating
 - 📝 Detailed product view
@@ -20,13 +20,14 @@ A React Native mobile application that allows users to browse and filter product
 - **Navigation**: React Navigation
 - **Native Modules**: Expo Modules for iOS Purchase Reminder
 - **Styling**: React Native StyleSheet
+- **Performance**: FlashList for efficient list rendering
 
 ## Key Technical Implementations
 
 ### Data Management
 
 - Implemented React Query for efficient data fetching and caching
-- Infinite scroll with automatic data prefetching
+- Infinite scroll with automatic data prefetching using FlashList
 - Automatic background refetching for data freshness
 
 ### Native Integration
@@ -87,16 +88,18 @@ yarn android
 ## Project Structure
 
 ```
-src/
-├── api/           # API integration and types
-│   └── productsApi.ts    # Products API endpoints
-├── mappers/       # Data transformation layer
-│   └── productMapper.ts  # Product data mapping
-├── models/        # Type definitions
-├── navigation/    # Navigation configuration
-├── repositories/  # Data access layer
-├── screens/       # App screens
-└── services/      # Api Client logic
+├── modules/        # Native modules
+│   └── purchase-reminder/  # iOS Purchase Reminder native module
+├── src/
+│   ├── api/           # API integration and types
+│   │   └── productsApi.ts    # Products API endpoints
+│   ├── mappers/       # Data transformation layer
+│   │   └── productMapper.ts  # Product data mapping
+│   ├── models/        # Type definitions
+│   ├── navigation/    # Navigation configuration
+│   ├── repositories/  # Data access layer
+│   ├── screens/       # App screens
+│   └── services/      # Api Client logic
 ```
 
 ## Deep Linking
@@ -135,6 +138,7 @@ npx uri-scheme open exp+products-catalog://category/beauty --android
 ## Future Improvements
 
 - [ ] Android Purchase Reminder implementation
+- [ ] Clean up and refactor iOS Purchase Reminder native module
 - [ ] Add theme styling
 - [ ] Unit and integration tests
 - [ ] Enhance UX/UI
