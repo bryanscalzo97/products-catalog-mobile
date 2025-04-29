@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HomeScreen } from '../screens/HomeScreen/HomeScreen';
 import { ProductDetailScreen } from '../screens/ProductDetailScreen/ProductDetailScreen';
-import { RootStackParamList } from './types';
+import { RootStackParamList } from '../models';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -11,7 +11,12 @@ const linking = {
   prefixes: ['productscatalog://', 'exp+products-catalog://'],
   config: {
     screens: {
-      Home: '',
+      Home: {
+        path: 'category/:category?',
+        parse: {
+          category: (category: string) => decodeURIComponent(category),
+        },
+      },
       ProductDetail: {
         path: 'product/:productId',
         parse: {
@@ -22,7 +27,6 @@ const linking = {
   },
 };
 
-export default linking;
 export const AppNavigator: React.FC = () => {
   return (
     <NavigationContainer linking={linking}>

@@ -1,4 +1,4 @@
-import { Product } from '../models/Product';
+import { Product } from '../models';
 
 // DummyJSON API response type
 export type ApiProduct = {

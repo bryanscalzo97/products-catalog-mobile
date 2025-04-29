@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import {
   productRepository,
   GetProductsParams,
@@ -12,11 +12,34 @@ export const useGetProducts = (params?: GetProductsParams) => {
   });
 };
 
+export const useGetProductsInfinite = (
+  params: Omit<GetProductsParams, 'skip'>
+) => {
+  return useInfiniteQuery({
+    queryKey: ['products', 'infinite', params],
+    queryFn: async ({ pageParam = 0 }) => {
+      const response = await productRepository.getProducts({
+        ...params,
+        skip: pageParam * 20,
+        limit: 20,
+      });
+      return {
+        products: response,
+        nextPage: response.length === 20 ? pageParam + 1 : undefined,
+        currentPage: pageParam,
+      };
+    },
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+    initialPageParam: 0,
+    getPreviousPageParam: (firstPage) => firstPage.currentPage - 1,
+  });
+};
+
 export const useGetCategories = () => {
   return useQuery({
     queryKey: ['categories'],
     queryFn: () => productRepository.getCategories(),
-    staleTime: 30 * 60 * 1000, // 30 minutes, because categories don't change often
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
 

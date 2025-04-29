@@ -1,33 +1,35 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
-  FlatList,
   ActivityIndicator,
   Text,
   RefreshControl,
-  StyleSheet,
   TouchableOpacity,
-  Modal,
-  ScrollView,
 } from 'react-native';
-import { ProductCard } from '../../components/ProductCard';
-import { Product } from '../../models/Product';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useGetProducts, useGetCategories } from '../../api/productsApi';
+import { Product } from '../../models';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { HomeScreenNavigationProp, RootStackParamList } from '../../models';
+import {
+  useGetProductsInfinite,
+  useGetCategories,
+} from '../../api/productsApi';
 import { Ionicons } from '@expo/vector-icons';
-import { useFilters } from './useFilters';
-import { RootStackParamList } from '../../navigation/types';
+import { FilterState, FilterModalState } from '../../models';
+import { styles } from './HomeScreenStyles';
+import { FilterModal } from './components/FilterModals/FilterModal';
+import { FlashList } from '@shopify/flash-list';
+import { useFilters } from './hooks/useFilters';
+import { ProductCard } from './components/ProductCard/ProductCard';
 
-type HomeScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'Home'
->;
+type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
 
 export const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
+  const route = useRoute<HomeScreenRouteProp>();
+
   const {
     filters,
+    setFilters,
     modalState,
     setModalState,
     openFilterModal,
@@ -35,19 +37,46 @@ export const HomeScreen: React.FC = () => {
     updateModalFilter,
   } = useFilters();
 
-  const { data: categories } = useGetCategories();
+  // If a category is provided in the route params (deep link), update the modal state and filters.
+  useEffect(() => {
+    if (route.params?.category) {
+      const category = route.params.category;
+      setModalState((prev: FilterModalState) => ({
+        ...prev,
+        category,
+      }));
+      setFilters((prev: FilterState) => ({
+        ...prev,
+        category,
+      }));
+    }
+  }, [route.params?.category]);
+
   const {
-    data: products,
+    data,
     isLoading,
     isError,
     error,
     refetch,
     isRefetching,
-  } = useGetProducts(filters);
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGetProductsInfinite(filters);
+
+  const { data: categories } = useGetCategories();
 
   const handleProductPress = (product: Product) => {
     navigation.navigate('ProductDetail', { productId: product.id });
   };
+
+  const handleLoadMore = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  };
+
+  const products = data?.pages.flatMap((page) => page.products) || [];
 
   if (isLoading) {
     return (
@@ -67,303 +96,48 @@ export const HomeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.filterButton} onPress={openFilterModal}>
-          <Ionicons name='options-outline' size={24} color='#666' />
+          <Ionicons name='filter' size={24} color='#666' />
         </TouchableOpacity>
       </View>
 
-      <FlatList
+      {/* Products List */}
+      <FlashList
         data={products}
         renderItem={({ item }) => (
-          <ProductCard product={item} onPress={handleProductPress} />
+          <ProductCard
+            product={item}
+            onPress={() => handleProductPress(item)}
+          />
         )}
         keyExtractor={(item) => item.id.toString()}
         numColumns={1}
         refreshControl={
           <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
         }
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          isFetchingNextPage ? (
+            <View style={styles.loadingMoreContainer}>
+              <ActivityIndicator />
+            </View>
+          ) : null
+        }
+        estimatedItemSize={361}
       />
 
-      <Modal
-        visible={modalState.isVisible}
-        animationType='slide'
-        presentationStyle='pageSheet'
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Filters</Text>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() =>
-                setModalState((prev) => ({ ...prev, isVisible: false }))
-              }
-            >
-              <Ionicons name='close' size={24} color='#666' />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView style={styles.modalContent}>
-            <View style={styles.filterSection}>
-              <Text style={styles.sectionTitle}>Categories</Text>
-              <View style={styles.filterRow}>
-                <TouchableOpacity
-                  style={[
-                    styles.filterChip,
-                    modalState.category === '' && styles.selectedFilterChip,
-                  ]}
-                  onPress={() => updateModalFilter('category', '')}
-                >
-                  <Text
-                    style={[
-                      styles.filterChipText,
-                      modalState.category === '' &&
-                        styles.selectedFilterChipText,
-                    ]}
-                  >
-                    All
-                  </Text>
-                </TouchableOpacity>
-                {categories?.map((category) => (
-                  <TouchableOpacity
-                    key={category.slug}
-                    style={[
-                      styles.filterChip,
-                      modalState.category === category.slug &&
-                        styles.selectedFilterChip,
-                    ]}
-                    onPress={() => updateModalFilter('category', category.slug)}
-                  >
-                    <Text
-                      style={[
-                        styles.filterChipText,
-                        modalState.category === category.slug &&
-                          styles.selectedFilterChipText,
-                      ]}
-                    >
-                      {category.name}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-
-            <View style={styles.filterSection}>
-              <Text style={styles.sectionTitle}>Sort By</Text>
-              <View style={styles.sortContainer}>
-                <TouchableOpacity
-                  style={[
-                    styles.sortButton,
-                    modalState.sortBy === 'price' && styles.selectedSortButton,
-                  ]}
-                  onPress={() => updateModalFilter('sortBy', 'price')}
-                >
-                  <Text
-                    style={[
-                      styles.sortButtonText,
-                      modalState.sortBy === 'price' &&
-                        styles.selectedSortButtonText,
-                    ]}
-                  >
-                    Price
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.sortButton,
-                    modalState.sortBy === 'rating' && styles.selectedSortButton,
-                  ]}
-                  onPress={() => updateModalFilter('sortBy', 'rating')}
-                >
-                  <Text
-                    style={[
-                      styles.sortButtonText,
-                      modalState.sortBy === 'rating' &&
-                        styles.selectedSortButtonText,
-                    ]}
-                  >
-                    Rating
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View style={styles.filterSection}>
-              <Text style={styles.sectionTitle}>Order</Text>
-              <View style={styles.sortContainer}>
-                <TouchableOpacity
-                  style={[
-                    styles.sortButton,
-                    modalState.sortOrder === 'asc' && styles.selectedSortButton,
-                  ]}
-                  onPress={() => updateModalFilter('sortOrder', 'asc')}
-                >
-                  <Text
-                    style={[
-                      styles.sortButtonText,
-                      modalState.sortOrder === 'asc' &&
-                        styles.selectedSortButtonText,
-                    ]}
-                  >
-                    Ascending
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.sortButton,
-                    modalState.sortOrder === 'desc' &&
-                      styles.selectedSortButton,
-                  ]}
-                  onPress={() => updateModalFilter('sortOrder', 'desc')}
-                >
-                  <Text
-                    style={[
-                      styles.sortButtonText,
-                      modalState.sortOrder === 'desc' &&
-                        styles.selectedSortButtonText,
-                    ]}
-                  >
-                    Descending
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <TouchableOpacity style={styles.applyButton} onPress={applyFilters}>
-              <Text style={styles.applyButtonText}>Apply Filters</Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-      </Modal>
+      {/* Filter Modal */}
+      <FilterModal
+        isVisible={modalState.isVisible}
+        onClose={() => setModalState({ ...modalState, isVisible: false })}
+        onApply={applyFilters}
+        categories={categories || []}
+        modalState={modalState}
+        onUpdateFilter={updateModalFilter}
+      />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorText: {
-    color: 'red',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    padding: 15,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ebebeb',
-    alignItems: 'center',
-  },
-  filterButton: {
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: '#f7f7f7',
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ebebeb',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  closeButton: {
-    padding: 8,
-  },
-  filterSection: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ebebeb',
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 15,
-    color: '#222',
-  },
-  filterRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  filterChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#f7f7f7',
-    borderWidth: 1,
-    borderColor: '#ebebeb',
-  },
-  filterChipText: {
-    fontSize: 14,
-    color: '#222',
-  },
-  selectedFilterChip: {
-    backgroundColor: '#0060b3',
-    borderColor: '#0060b3',
-  },
-  selectedFilterChipText: {
-    color: '#fff',
-    fontWeight: '500',
-  },
-  sortContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
-  },
-  sortButton: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-    backgroundColor: '#f7f7f7',
-    marginHorizontal: 4,
-    alignItems: 'center',
-  },
-  sortButtonText: {
-    fontSize: 14,
-    color: '#222',
-  },
-  selectedSortButton: {
-    backgroundColor: '#0060b3',
-  },
-  selectedSortButtonText: {
-    color: '#fff',
-    fontWeight: '500',
-  },
-  applyButton: {
-    backgroundColor: '#0060b3',
-    padding: 20,
-    alignItems: 'center',
-    margin: 20,
-    borderRadius: 8,
-  },
-  applyButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  modalContent: {
-    flex: 1,
-  },
-});
