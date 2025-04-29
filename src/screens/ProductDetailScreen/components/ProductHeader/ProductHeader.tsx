@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { Product } from '../../../models/Product';
-import { styles } from '../ProductDetailScreenStyles';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { Product } from '../../../../models';
+import { styles } from './ProductHeaderStyles';
 
 type ProductHeaderProps = {
   product: Product;

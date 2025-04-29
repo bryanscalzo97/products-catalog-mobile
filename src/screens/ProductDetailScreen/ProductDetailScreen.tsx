@@ -20,10 +20,10 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { styles } from './ProductDetailScreenStyles';
 import { useReminder } from './hooks/useReminder';
 import * as Notifications from 'expo-notifications';
-import { ProductHeader } from './components/ProductHeader';
-import { ProductPrice } from './components/ProductPrice';
-import { ProductDescription } from './components/ProductDescription';
-import { ReminderButton } from './components/ReminderButton';
+import { ProductDescription } from './components/ProductDescription/ProductDescription';
+import { ProductHeader } from './components/ProductHeader/ProductHeader';
+import { ProductPrice } from './components/ProductPrice/ProductPrice';
+import { ReminderButton } from './components/ReminderButton/ReminderButton';
 
 // Define the type for route parameters specific to this screen
 type ProductDetailRouteProp = RouteProp<RootStackParamList, 'ProductDetail'>;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { Product } from '../../../models/Product';
-import { styles } from '../ProductDetailScreenStyles';
+import { Product } from '../../../../models';
+import { styles } from './ProductPriceStyles';
 
 type ProductPriceProps = {
   product: Product;
