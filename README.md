@@ -3,9 +3,8 @@
 A React Native mobile application that allows users to browse and filter products from the DummyJSON API. Built with Expo Dev Client, TypeScript, and React Query for optimal performance and user experience.
 
 ## Demo
+
 https://github.com/user-attachments/assets/28ecab4a-5896-406f-b228-5024b2801603
-
-
 
 ## Features
 
@@ -16,6 +15,7 @@ https://github.com/user-attachments/assets/28ecab4a-5896-406f-b228-5024b2801603
 - 📅 iOS Purchase Reminder (Native Module)
 - 🔄 Efficient data caching with React Query
 - 🎯 Deep linking support
+- 🔔 Push notifications for user engagement (triggered 5 seconds after viewing a product for testing purposes)
 
 ## Technical Stack
 
@@ -26,6 +26,7 @@ https://github.com/user-attachments/assets/28ecab4a-5896-406f-b228-5024b2801603
 - **Native Modules**: Expo Modules for iOS Purchase Reminder
 - **Styling**: React Native StyleSheet
 - **Performance**: FlashList for efficient list rendering
+- **Notifications**: Expo Notifications for push notifications with configurable timing
 
 ## Key Technical Implementations
 
