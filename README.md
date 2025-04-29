@@ -2,6 +2,11 @@
 
 A React Native mobile application that allows users to browse and filter products from the DummyJSON API. Built with Expo Dev Client, TypeScript, and React Query for optimal performance and user experience.
 
+## Demo
+https://github.com/user-attachments/assets/28ecab4a-5896-406f-b228-5024b2801603
+
+
+
 ## Features
 
 - 📱 Product catalog with infinite scroll using FlashList for optimal performance
