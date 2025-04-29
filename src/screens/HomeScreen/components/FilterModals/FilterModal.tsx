@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { styles } from '../HomeScreenStyles';
-import { Category } from '../../../repositories/productRepository';
+import { styles } from '../../HomeScreenStyles';
+import { Category } from '../../../../repositories/productRepository';
 
 type FilterModalProps = {
   isVisible: boolean;

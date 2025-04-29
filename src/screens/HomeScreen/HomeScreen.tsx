@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 import {
   View,
-  FlatList,
   ActivityIndicator,
   Text,
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
-import { ProductCard } from '../../components/ProductCard';
+import { ProductCard } from './components/ProductCard/ProductCard';
 import { Product } from '../../models/Product';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import {
@@ -19,11 +18,11 @@ import {
   useGetCategories,
 } from '../../api/productsApi';
 import { Ionicons } from '@expo/vector-icons';
-import { useFilters } from './useFilters';
 import { FilterState, FilterModalState } from './types';
 import { styles } from './HomeScreenStyles';
-import { FilterModal } from './components/FilterModal';
+import { FilterModal } from './components/FilterModals/FilterModal';
 import { FlashList } from '@shopify/flash-list';
+import { useFilters } from './hooks/useFilters';
 
 type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
 
