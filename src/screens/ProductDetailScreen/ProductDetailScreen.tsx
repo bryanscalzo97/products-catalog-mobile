@@ -14,7 +14,7 @@ import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import {
   ProductDetailScreenNavigationProp,
   RootStackParamList,
-} from '../../navigation/types';
+} from '../../models';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { styles } from './ProductDetailScreenStyles';

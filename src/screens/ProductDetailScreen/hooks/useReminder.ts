@@ -9,9 +9,6 @@ export const useReminder = () => {
 
   const handleAddReminder = async (selectedDate: Date) => {
     try {
-      const eventId = await PurchaseReminderModule.createReminder(
-        selectedDate.getTime()
-      );
       Alert.alert('✅ Reminder Created', 'Would you like to view the event?', [
         { text: 'Cancel', style: 'cancel' },
         {
