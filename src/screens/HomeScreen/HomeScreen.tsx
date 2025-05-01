@@ -64,7 +64,7 @@ export const HomeScreen: React.FC = () => {
     isFetchingNextPage,
   } = useGetProductsInfinite(filters);
 
-  const { data: categories } = useGetCategories();
+  const { data: categories, refetch: refetchCategories } = useGetCategories();
 
   const handleProductPress = (product: Product) => {
     navigation.navigate('ProductDetail', { productId: product.id });
@@ -74,6 +74,10 @@ export const HomeScreen: React.FC = () => {
     if (hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
+  };
+
+  const handleRefresh = async () => {
+    await Promise.all([refetch(), refetchCategories()]);
   };
 
   const products = data?.pages.flatMap((page) => page.products) || [];
@@ -115,7 +119,7 @@ export const HomeScreen: React.FC = () => {
         keyExtractor={(item) => item.id.toString()}
         numColumns={1}
         refreshControl={
-          <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
+          <RefreshControl refreshing={isRefetching} onRefresh={handleRefresh} />
         }
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.5}
