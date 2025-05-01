@@ -4,14 +4,6 @@ import {
   GetProductsParams,
 } from '../repositories/productRepository';
 
-export const useGetProducts = (params?: GetProductsParams) => {
-  return useQuery({
-    queryKey: ['products', params],
-    queryFn: () => productRepository.getProducts(params),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-};
-
 export const useGetProductsInfinite = (
   params: Omit<GetProductsParams, 'skip'>
 ) => {
