@@ -9,6 +9,12 @@ export const useReminder = () => {
 
   const handleAddReminder = async (selectedDate: Date) => {
     try {
+      // Convert the date to milliseconds since epoch
+      const timestamp = selectedDate.getTime();
+
+      // Call the native module to create the calendar event
+      const eventId = await PurchaseReminderModule.createReminder(timestamp);
+
       Alert.alert('✅ Reminder Created', 'Would you like to view the event?', [
         { text: 'Cancel', style: 'cancel' },
         {
