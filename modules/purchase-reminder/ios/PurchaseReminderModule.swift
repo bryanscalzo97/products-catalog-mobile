@@ -1,30 +1,18 @@
-import EventKit
-import ExpoModulesCore
+import EventKit // Import the EventKit framework from Apple to interact with the calendar
+import ExpoModulesCore // Import the ExpoModulesCore framework from Expo to create the module
 
 public class PurchaseReminderModule: Module {
+  // Define the module
   public func definition() -> ModuleDefinition {
-    Name("PurchaseReminder")
+  // Name the module
+  Name("PurchaseReminder")
 
-    Constants([
-      "PI": Double.pi
-    ])
-
-    Events("onChange")
-
-    Function("hello") {
-      return "Hello world!"
-    }
-
-    AsyncFunction("setValueAsync") { (value: String) in
-      self.sendEvent("onChange", [
-        "value": value
-      ])
-    }
-
-    // Create a reminder
+  // Create a reminder
   AsyncFunction("createReminder") { (timestamp: Double) async throws -> String in
+  // Create an event store
   let eventStore = EKEventStore()
 
+  // Request access to the calendar
   return try await withCheckedThrowingContinuation { continuation in
     eventStore.requestAccess(to: .event) { (granted, error) in
       if let error = error {
@@ -32,6 +20,7 @@ public class PurchaseReminderModule: Module {
         return
       }
 
+      // If access is granted, create the event 
       if granted {
         let event = EKEvent(eventStore: eventStore)
         event.title = "Purchase Reminder"
@@ -45,6 +34,7 @@ public class PurchaseReminderModule: Module {
         let alarm = EKAlarm(relativeOffset: -15 * 60) 
         event.addAlarm(alarm)
 
+        // Save the event
         do {
           try eventStore.save(event, span: .thisEvent)
           continuation.resume(returning: event.eventIdentifier)
@@ -58,17 +48,5 @@ public class PurchaseReminderModule: Module {
   }
 }
 
-
-
-
-    View(PurchaseReminderView.self) {
-      Prop("url") { (view: PurchaseReminderView, url: URL) in
-        if view.webView.url != url {
-          view.webView.load(URLRequest(url: url))
-        }
-      }
-
-      Events("onLoad")
-    }
   }
 }
